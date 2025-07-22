@@ -1,7 +1,7 @@
 from flask_limiter.util import get_remote_address
 from flask import Flask, request, jsonify
 from flask_limiter import Limiter
-from utils import get_logger
+from .utils import get_logger
 from flask_cors import CORS
 from logging import Logger
 from service.smtp import send_email_smtp, get_email_content, MessageType
