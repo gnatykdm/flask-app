@@ -10,7 +10,6 @@ from .service.dto import *
 logger: Logger = get_logger()
 app: Flask = Flask(__name__)
 
-# Разрешаем CORS для всех источников
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 @app.after_request

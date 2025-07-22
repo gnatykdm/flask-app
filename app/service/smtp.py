@@ -5,11 +5,11 @@ from pydantic import BaseModel
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from ..core.config import get_mail_receiver
 from ..service.dto import *
 from ..core.config import SmtpConfig
-from ..utils import read_emails
 
-EMAILS: List[str] = read_emails()
+EMAIL: str = get_mail_receiver()
 smtp_config = SmtpConfig()
 
 class MessageType(Enum):
@@ -22,7 +22,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
     if message_type == MessageType.FEEDBACK:
         data: FeedBackCallDTO = dto
         subject = "Wohlfahrt - Швидкий дзвінок"
-        phone = data.phone  # исправлено здесь
+        phone = data.phone
         body_text = f"Користувач {data.name} просить передзвонити за номером: {phone}"
 
         body_html = f"""
@@ -128,7 +128,7 @@ def send_email_smtp(subject: str, body_text: str, body_html: str):
     SMTP_LOGIN = smtp_config.mail_username
     SMTP_PASSWORD = smtp_config.mail_password
 
-    if not EMAILS:
+    if not EMAIL:
         print("ALARM! List with emails is empty.")
         return
 
@@ -137,23 +137,21 @@ def send_email_smtp(subject: str, body_text: str, body_html: str):
             server.starttls()
             server.login(SMTP_LOGIN, SMTP_PASSWORD)
 
-            for recipient in EMAILS:
-                try:
-                    email_message = MIMEMultipart("alternative")
-                    email_message["From"] = SMTP_LOGIN
-                    email_message["To"] = recipient
-                    email_message["Subject"] = subject
 
-                    part1 = MIMEText(body_text, "plain")
-                    part2 = MIMEText(body_html, "html")
 
-                    email_message.attach(part1)
-                    email_message.attach(part2)
+        email_message = MIMEMultipart("alternative")
+        email_message["From"] = SMTP_LOGIN
+        email_message["To"] = EMAIL
+        email_message["Subject"] = subject
 
-                    server.send_message(email_message)
-                    print(f"Message sent: {recipient} with subject: {subject}")
-                except Exception as e:
-                    print(f"Error with message delivery {recipient}: {e}")
+        part1 = MIMEText(body_text, "plain")
+        part2 = MIMEText(body_html, "html")
+
+        email_message.attach(part1)
+        email_message.attach(part2)
+
+        server.send_message(email_message)
+        print(f"Message sent: {EMAIL} with subject: {subject}")
 
     except Exception as e:
         print(f"Error with SMTP Connection: {e}")

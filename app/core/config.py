@@ -27,5 +27,9 @@ smtp_config: SmtpConfig = SmtpConfig(
     mail_ssl=str_to_bool(os.getenv("MAIL_SSL")),
 )
 
+MAIL_RECEIVER = os.getenv("MAIL_RECEIVER")
+def get_mail_receiver() -> str:
+    return MAIL_RECEIVER
+
 def get_smtp_config() -> SmtpConfig:
     return smtp_config
