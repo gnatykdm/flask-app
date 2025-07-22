@@ -4,8 +4,8 @@ from flask_limiter import Limiter
 from .utils import get_logger
 from flask_cors import CORS
 from logging import Logger
-from service.smtp import send_email_smtp, get_email_content, MessageType
-from service.dto import *
+from .service.smtp import send_email_smtp, get_email_content, MessageType
+from .service.dto import *
 
 logger: Logger = get_logger()
 app: Flask = Flask(__name__)
