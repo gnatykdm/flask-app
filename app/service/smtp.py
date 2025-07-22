@@ -122,7 +122,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
 
 
 
-def send_email_smtp(subject: str, body_text: str, body_html: str):
+def send_email_smtp_debug(subject: str, body_text: str, body_html: str):
     SMTP_SERVER = smtp_config.mail_server
     SMTP_PORT = smtp_config.mail_port
     SMTP_LOGIN = smtp_config.mail_username
@@ -133,12 +133,7 @@ def send_email_smtp(subject: str, body_text: str, body_html: str):
         return
 
     try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_LOGIN, SMTP_PASSWORD)
-
-
-
+        print(f"[DEBUG] Preparing email to: {EMAIL}")
         email_message = MIMEMultipart("alternative")
         email_message["From"] = SMTP_LOGIN
         email_message["To"] = EMAIL
@@ -146,12 +141,23 @@ def send_email_smtp(subject: str, body_text: str, body_html: str):
 
         part1 = MIMEText(body_text, "plain")
         part2 = MIMEText(body_html, "html")
-
         email_message.attach(part1)
         email_message.attach(part2)
+        print("[DEBUG] Email message created.")
 
-        server.send_message(email_message)
+        print(f"[DEBUG] Connecting to SMTP server {SMTP_SERVER}:{SMTP_PORT} ...")
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.set_debuglevel(1) 
+            print("[DEBUG] Starting TLS...")
+            server.starttls()
+            print("[DEBUG] Logging in...")
+            server.login(SMTP_LOGIN, SMTP_PASSWORD)
+            print("[DEBUG] Sending email...")
+            server.send_message(email_message)
+            print("[DEBUG] Email successfully sent.")
+
         print(f"Message sent: {EMAIL} with subject: {subject}")
 
     except Exception as e:
         print(f"Error with SMTP Connection: {e}")
+
