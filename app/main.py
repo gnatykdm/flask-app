@@ -10,7 +10,14 @@ from .service.dto import *
 logger: Logger = get_logger()
 app: Flask = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "https://wohlfahrt.com.ua"}}, supports_credentials=True)
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'https://wohlfahrt.com.ua'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    return response
 
 limiter: Limiter = Limiter(
     key_func=get_remote_address,
