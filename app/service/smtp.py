@@ -122,7 +122,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
 
 
 
-def send_email_smtp_debug(subject: str, body_text: str, body_html: str):
+def send_email_smtp(subject: str, body_text: str, body_html: str):
     SMTP_SERVER = smtp_config.mail_server
     SMTP_PORT = smtp_config.mail_port
     SMTP_LOGIN = smtp_config.mail_username
