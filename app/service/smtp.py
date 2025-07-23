@@ -21,7 +21,7 @@ class MessageType(Enum):
 def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, str, str]:
     if message_type == MessageType.FEEDBACK:
         data: FeedBackCallDTO = dto
-        subject = "Wohlfahrt - Швидкий дзвінок"
+        subject = "WohlfahrtSite - Швидкий дзвінок"
         phone = data.phone
         body_text = f"Користувач {data.name} просить передзвонити за номером: {phone}"
 
@@ -40,7 +40,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
     elif message_type == MessageType.DELIVERY_CALC:
         data: DeliverCalcDTO = dto
         phone = data.phone_number if data.phone_number else "Не вказано"  # исправлено здесь
-        subject = "Wohlfahrt - Розрахунок доставки"
+        subject = "WohlfahrtSite - Розрахунок доставки"
         body_text = (
             f"Запит на розрахунок доставки:\n"
             f"Напрямок: {data.direction}\n"
@@ -72,7 +72,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
     elif message_type == MessageType.MESSAGE:
         data: MessageDTO = dto
         phone = data.phone  # исправлено здесь
-        subject = "Wohlfahrt - Повідомлення"
+        subject = "WohlfahrtSite - Повідомлення"
         body_text = (
             f"Користувач {data.name} залишив повідомлення.\n"
             f"Телефон: {phone}\n"
@@ -98,8 +98,8 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
 
     elif message_type == MessageType.PHONE_CALL:
         data: PhoneNumberDTO = dto
-        phone = data.number  # тут оставляем, если DTO имеет поле number
-        subject = "Wohlfahrt - Запит на дзвінок"
+        phone = data.number
+        subject = "WohlfahrtSite - Запит на дзвінок"
         body_text = f"Користувач залишив номер телефону: {phone}"
 
         body_html = f"""
@@ -114,7 +114,7 @@ def get_email_content(message_type: MessageType, dto: BaseModel) -> tuple[str, s
         """
 
     else:
-        subject = "Wohlfahrt - Невідомий тип повідомлення"
+        subject = "WohlfahrtSite - Невідомий тип повідомлення"
         body_text = "<НЕВІДОМЕ ПОВІДОМЛЕННЯ>"
         body_html = f"<html><body><p>{body_text}</p></body></html>"
 
